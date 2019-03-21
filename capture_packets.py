@@ -12,11 +12,14 @@ Authors:
 	Theodore Bieber
 	Thomas White
 '''
-# installs: libpcap, scapy
+# pip installs: libpcap, scapy==2.4.0 !!! scapy version > 2.4.0 has unresolved issues on windows
+# also could do pip install -r requirements.txt
+# also install npcap https://nmap.org/download.html (latest Npcap release self-install worked for me)
 from scapy.all import sniff
 
+def main():
+	sniff(filter="ip", prn=handle_sniffed, count=0)
 
-sniff(filter="ip", prn=handle_sniffed, count=0)
 
 
 ''' handle_sniffed:
@@ -35,3 +38,8 @@ def handle_sniffed(packet):
 # Logging format
 # <timestamp> <srcaddr> <dstaddr> <srcport> <dstport> <proto>
 #... <#packets sent> <#packets rcvd> <#bytes send> <#bytes rcvd>
+
+
+
+if __name__ == '__main__':
+	main()
