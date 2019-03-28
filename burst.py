@@ -40,7 +40,7 @@ class Burst:
     Adds a packet to the flow
     '''
     def __add__(self, packet):
-        assert (self == packet), "burst timestamp more than a second before packet timestamp" # won't work anymore
+        assert (self == packet), "burst timestamp more than a second before packet timestamp"
 
         added = False # boolean that tracks whether we added the packet to a flow or not
         # if we added it, then we don't need to do anything
