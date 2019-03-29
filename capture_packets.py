@@ -63,6 +63,7 @@ def check_for_burst():
 	"""
 	reactor.enter(.45, 1, check_for_burst)
 	reactor.run()
+	# Don't process if there is nothing to process
 	if len(packet_queue) > 0:
 		if time.time() - packet_queue[-1].time > 1:
 			analyze_burst(packet_queue[-1])
@@ -72,7 +73,35 @@ def analyze_burst(last_packet):
 	Handles putting packets into flows, prints, and then archives the burst
 	stops processing when `last_packet` is reached
 	"""
-	pass
+	current_pkt = packet_queue.get()
+	identified_flows = []
+
+	# Group the packets into flows
+	while True:
+		for flow in identified_flows:
+			if flow == current_pkt:
+				flow += current_pkt
+				break
+		# The else statement will trigger if the break never happens
+		else:
+			identified_flows.append(flow.Flow(
+				current_pkt.source_ip,
+				current_pkt.dest_ip,
+				current_pkt.source_port,
+				current_pkt.dest_port,
+			))
+
+		if current_pkt is not last_packet:
+			current_pkt = packet_queue.get()
+		# We've reached the end of the burst,
+		# stop dequing
+		else:
+			break
+
+	# Print out the statistics (formatted in the Flow)
+	for flow in identified_flows:
+		print(flow)
+
 
 # # make sure to log flows on exit (no longer think this is necessary, but will leave for now)
 # def onexit():
