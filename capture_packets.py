@@ -64,6 +64,7 @@ class AnalysisThread(Thread):
 
 		# Group the packets into flows
 		while True:
+			print(111)
 			for data_flow in identified_flows:
 				if data_flow == current_pkt:
 					data_flow += current_pkt
@@ -113,7 +114,7 @@ def handle_sniffed(packet):
 	# to get specific elements reference https://blogs.sans.org/pen-testing/files/2016/04/ScapyCheatSheet_v0.2.pdf
 	# put_in_flow(packet)
 	global last_packet
-	print("packet sniffed")
+	# print("packet sniffed")
 	if packet.haslayer(TCP) and packet.haslayer(IP): # so this line we will probably need to remove at some point, but we also need the IP and TCP layers in order to get some information with scapy
 		last_packet = packet
 		packet_queue.put(packet)
