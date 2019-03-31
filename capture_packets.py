@@ -64,19 +64,18 @@ class AnalysisThread(Thread):
 
 		# Group the packets into flows
 		while True:
-			print(111)
 			for data_flow in identified_flows:
 				if data_flow == current_pkt:
 					data_flow += current_pkt
 					break
 			# The else statement will trigger if the break never happens
 			else:
-				identified_flows.append(Flow(
-					current_pkt[IP].src,
-					current_pkt[IP].dst,
-					current_pkt[TCP].sport,
-					current_pkt[TCP].dport,
-				))
+				identified_flows.append(Flow().__add__(current_pkt))
+				# 	current_pkt[IP].src,
+				# 	current_pkt[IP].dst,
+				# 	current_pkt[TCP].sport,
+				# 	current_pkt[TCP].dport,
+				# ))
 
 			if current_pkt is not last_packet:
 				current_pkt = packet_queue.get()

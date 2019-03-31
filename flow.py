@@ -89,4 +89,4 @@ class Flow:
     '''
     def __str__(self): 
         return ("<"+str(self.timestamp)+">"+"<"+str(self.source_ip)+">"+"<"+str(self.dest_ip)+">"+"<"+str(self.source_port)+">"+"<"+str(self.dest_port)+">"+"<"+str(self.protocol)+">"
-                +"\\"+"<"+self.packets_sent+">"+"<"+self.packets_received+">"+"<"+self.bytes_sent+">"+"<"+self.bytes_received+">")
+                +"\\"+"<"+str(self.packets_sent)+">"+"<"+str(self.packets_received)+">"+"<"+str(self.bytes_sent)+">"+"<"+str(self.bytes_received)+">")
