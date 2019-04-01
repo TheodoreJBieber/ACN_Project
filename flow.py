@@ -11,13 +11,7 @@ from scapy.all import IP, TCP
 class Flow:
 
     def __init__(self, source_ip=None, dest_ip=None, source_port=None, dest_port=None, protocol=None):
-        self.source_ip = source_ip
-        self.dest_ip = dest_ip
-        self.source_port = source_port
-        self.dest_port = dest_port
-        self.protocol = protocol
-        self.packets = []
-        self.timestamp = None
+        self.init(source_ip, dest_ip, source_port, dest_port, protocol)
 
     def init(self, source_ip=None, dest_ip=None, source_port=None, dest_port=None, protocol=None):
         self.source_ip = source_ip
@@ -25,7 +19,15 @@ class Flow:
         self.source_port = source_port
         self.dest_port = dest_port
         self.protocol = protocol
+        
+        # tracking
         self.timestamp = None
+        self.packets_sent=0
+        self.packets_received=0
+        self.bytes_sent=0
+        self.bytes_received=0
+
+
 
     '''
     Syntax: flowObject == packet
@@ -33,11 +35,19 @@ class Flow:
              -false otherwise
     '''
     def __eq__(self, packet): # TODO: This may change depending on whether the order matters for source/dest
-        return (self.source_ip == packet[IP].src and
+        return (
+            # check if A was source and B was dest
+            ((self.source_ip == packet[IP].src and
             self.dest_ip == packet[IP].dst and
             self.source_port == packet[0].sport and
             self.dest_port == packet[0].dport and
-            self.protocol == packet[IP].proto)
+            self.protocol == packet[IP].proto))
+            or # vice versa
+            ((self.dest_ip == packet[IP].src and
+            self.source_ip == packet[IP].dst and
+            self.dest_port == packet[0].sport and
+            self.source_port == packet[0].dport and
+            self.protocol == packet[IP].proto)))
 
     '''
     The inverse of __eq__
@@ -61,13 +71,22 @@ class Flow:
         assert (self == packet), "flow signature " + flowstring + " differs from packet signature " + packetstring
         
         # all good!
-        self.packets.append(packet)
+        # tracking
         self.timestamp = packet.time
+        sent = self.source_ip == packet[IP].src
+
+        if sent:
+            self.packets_sent+=1
+            self.bytes_sent+=len(packet)
+        else:
+            self.packets_received+=1
+            self.bytes_received+=len(packet)
 
         return self # return the flow object for convenience
         
     '''
     Prints the current flow summary information
     '''
-    def __str__(self): #                                                                                                                                              remove this (below) when done
-        return "<timestamp>"+"<"+str(self.source_ip)+">"+"<"+str(self.dest_ip)+">"+"<"+str(self.source_port)+">"+"<"+str(self.dest_port)+">"+"<"+str(self.protocol)+">"+ (str(len(self.packets))) +  "\\"+"<#packets sent> <#packets rcvd> <#bytes send> <#bytes rcvd>"
+    def __str__(self): 
+        return ("<"+str(self.timestamp)+">"+"<"+str(self.source_ip)+">"+"<"+str(self.dest_ip)+">"+"<"+str(self.source_port)+">"+"<"+str(self.dest_port)+">"+"<"+str(self.protocol)+">"
+                +"\\"+"<"+str(self.packets_sent)+">"+"<"+str(self.packets_received)+">"+"<"+str(self.bytes_sent)+">"+"<"+str(self.bytes_received)+">")
