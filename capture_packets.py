@@ -49,7 +49,7 @@ class AnalysisThread(Thread):
 		Used to check if analysis should start
 		"""
 		# Don't process if there is nothing to process
-		if packet_queue.qsize() > 0:
+		if not packet_queue.empty():
 			if time.time() - last_packet.time > 1:
 				self.analyze_burst(last_packet)
 
