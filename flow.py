@@ -28,6 +28,8 @@ class Flow:
         self.bytes_sent=0
         self.bytes_received=0
 
+        self.protostr = ""
+
 
 
     '''
@@ -66,6 +68,14 @@ class Flow:
     def __add__(self, packet): # TODO: still need to add sent/received stuff
         if self.source_ip == None:
             self.init(packet[IP].src,packet[IP].dst,packet[TCP].sport,packet[TCP].dport,packet[IP].proto)
+            
+            # from stack overflow
+            try: # hope nothing goes wrong
+                proto_field = IP().get_field('proto')
+                self.protostr = proto_field.i2s[packet.proto]
+            except:
+                self.protostr = str(self.protocol) # backup is to use int
+            
 
         flowstring = "<"+str(self.source_ip)+">"+"<"+str(self.dest_ip)+">"+"<"+str(self.source_port)+">"+"<"+str(self.dest_port)+">"+"<"+str(self.protocol)+">"
         packetstring = "<"+str(packet[IP].src)+">"+"<"+str(packet[IP].dst)+">"+"<"+str(packet[TCP].sport)+">"+"<"+str(packet[TCP].dport)+">"+"<"+str(packet[IP].proto)+">"
@@ -88,16 +98,17 @@ class Flow:
     '''
     Prints the current flow summary information
     '''
-    def __str__(self): 
+    def __str__(self):
         return (
             "<"+str(strftime('%Y-%m-%d %H:%M:%S', localtime(self.timestamp)))+">"+
             " <"+str(self.source_ip)+">"+
             " <"+str(self.dest_ip)+">"+
             " <"+str(self.source_port)+">"+
             " <"+str(self.dest_port)+">"+
-            " <"+str(self.protocol)+">"+
+            " <"+str(self.protostr)+">"+
             " <"+str(self.packets_sent)+">"+
             " <"+str(self.packets_received)+">"+
             " <"+str(self.bytes_sent)+">"+
             " <"+str(self.bytes_received)+">"
         )
+
