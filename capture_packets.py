@@ -84,8 +84,10 @@ class AnalysisThread(Thread):
 				break
 
 		# Print out the statistics (formatted in the Flow)
+		print('===============START OF BURST==================')
 		for flow in identified_flows:
 			print(flow)
+		print("===============END OF BURST====================\n")
 
 
 def main():
