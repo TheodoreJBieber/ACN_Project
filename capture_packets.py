@@ -42,7 +42,6 @@ class AnalysisThread(Thread):
 
 	def run(self):
 		while not self.stop_flag.wait(.45):
-			print("Checking for burst...")
 			self.check_for_burst()
 
 	def check_for_burst(self):
@@ -113,7 +112,6 @@ def handle_sniffed(packet):
 	# to get specific elements reference https://blogs.sans.org/pen-testing/files/2016/04/ScapyCheatSheet_v0.2.pdf
 	# put_in_flow(packet)
 	global last_packet
-	# print("packet sniffed")
 	if packet.haslayer(TCP) and packet.haslayer(IP): # so this line we will probably need to remove at some point, but we also need the IP and TCP layers in order to get some information with scapy
 		last_packet = packet
 		packet_queue.put(packet)
@@ -130,5 +128,4 @@ def handle_sniffed(packet):
 
 # run main
 if __name__ == '__main__':
-	print(packet_queue.qsize())
 	main()
