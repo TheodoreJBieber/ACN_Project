@@ -2,6 +2,7 @@ from sklearn import svm
 from sklearn.metrics import accuracy_score, classification_report, confusion_matrix
 
 from sklearn import tree
+from sklearn import ensemble
 
 import numpy as np
 
@@ -128,7 +129,8 @@ def main():
 	if load and os.path.exists(flpath):
 		clf = load_model(flpath)
 	else:
-		clf = tree.DecisionTreeClassifier()
+		# clf = tree.DecisionTreeClassifier()
+		clf = ensemble.RandomForestClassifier(n_estimators=200)
 		clf.fit(training_set, training_labels)
 		if save:
 			save_model(clf, fspath) # save the trained model for next time
