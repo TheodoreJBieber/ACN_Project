@@ -1,5 +1,5 @@
 from sklearn import svm
-from sklearn.metrics import accuracy_score
+from sklearn.metrics import accuracy_score, classification_report, confusion_matrix
 
 from sklearn import tree
 
@@ -135,16 +135,10 @@ def main():
 
 	predictions = clf.predict(test_set)
 
-	acc_mx = [[0, 0, 0, 0, 0], [0, 0, 0, 0, 0], [0, 0, 0, 0, 0], [0, 0, 0, 0, 0], [0, 0, 0, 0, 0]]
-	# calculate accuracy:
-	for i in range(0, len(predictions)):
-		p = predictions[i]
-		a = test_labels[i]
-		acc_mx[p][a]+=1
-
 	print("Accuracy: " + str(accuracy_score(test_labels, predictions)))
-	print(acc_mx)
-
+	print("Predicted >")
+	print("Actual \\/")
+	print(confusion_matrix(test_labels, predictions, labels=[0,1,2,3,4]))
 
 '''
 Save the model to a given file path
