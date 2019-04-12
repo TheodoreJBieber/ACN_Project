@@ -218,7 +218,25 @@ def parse_flow(line):
 
 	return result
 
+'''
+Given an array of predictions (ranging from 0-5) return strings with the predicted application they came from
+'''
+def map_predictions_to_strings(predictions):
+	strings = []
 
+	mapper = {
+		0:'Fruit Ninja',
+		1:'Google News',
+		2:'Android Internet Browser',
+		3:'The Weather Channel',
+		4:'Youtube',
+		5:'Noise'
+	}
+
+	for prediction in predictions:
+		strings.append(mapper.get(prediction))
+
+	return strings
 
 if __name__=="__main__":
 	main()
