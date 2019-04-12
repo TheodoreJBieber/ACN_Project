@@ -49,6 +49,8 @@ class Burst:
             if flow == packet:
                 flow + packet
                 added = True
+                if packet.time > self.timestamp:
+                    self.timestamp = packet.time
 
         if not added:
             self.flows.append(Flow().__add__(packet))

@@ -1,4 +1,3 @@
-from sklearn import svm
 from sklearn.metrics import accuracy_score, classification_report, confusion_matrix
 
 from sklearn import tree
@@ -37,13 +36,21 @@ def main():
 		elif argv[1] == "-l":
 			load = True
 			flpath = argv[2]
+		elif arv[1] == "-h": # Repeat code, :( but its low importance
+			print("Flags available: -s, -l")
+			print("-s <savepath>\tSaves the classifier to that location")
+			print("-l <loadpath>\tLoads in a classifier from the given path. Tests the accuracy then exits. Not useful for the project")
 		if argc > 4:
 			if argv[3] == "-s":
 				save = True
 				fspath = argv[4]
-			elif arv[3] == "-l":
+			elif argv[3] == "-l":
 				load = True
 				flpath = argv[4]
+			elif argv[3] == "-h":
+				print("Flags available: -s, -l")
+				print("-s <savepath>\tSaves the classifier to that location")
+				print("-l <loadpath>\tLoads in a classifier from the given path. Tests the accuracy then exits. Not useful for the project")
 	# set up training set
 	flowbase = "flows/" # forgot to include this in paths first time around, so i put a var here
 	training_files = [

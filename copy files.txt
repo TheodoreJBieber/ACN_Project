@@ -1,0 +1,13 @@
+scp -P 12345 FILE_NAME tc@localhost:/home/tc/
+THEN ENTER PASSWORD
+
+download python:
+tce-load -wi compiletc.tcz
+
+follow https://tecadmin.net/install-python-3-7-on-ubuntu-linuxmint/
+----
+sudo wget https://www.python.org/ftp/python/3.7.3/Python-3.7.3.tgz
+sudo tar xzf Python-3.7.3.tgz
+cd Python-3.7.2
+sudo ./configure --enable-optimizations
+sudo make altinstall

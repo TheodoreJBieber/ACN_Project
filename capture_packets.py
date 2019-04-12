@@ -18,10 +18,10 @@ import time
 from threading import Event, Thread
 
 # also install npcap https://nmap.org/download.html (latest Npcap release self-install worked for me)
-from scapy.all import sniff, IP, TCP
+from scapy.all import *
 
 from flow import Flow
-import burst
+from burst import Burst
 import queue # for our packets or bursts
 
 # Used to signal to the analysis thread to stop
@@ -99,6 +99,30 @@ def main():
 	analysis.start()
 	sniff(filter=FILTER, prn=handle_sniffed, count=0) # count = 0 means run indefinitely
 	shutdown_event.set()
+
+# read packet in from file, write the result to a string
+def read_from_file(pcap_path):
+	packets = rdpcap(pcap_path)
+	bursts = []
+	for packet in packets:
+		if packet.haslayer(TCP) and packet.haslayer(IP):
+			for burst in bursts:
+				if burst == packet:
+					burst+packet
+					break
+			else:
+				bursts.append(Burst(packet))
+				# add new burst
+	out = ""
+
+	for b in bursts:
+		out+='===============START OF BURST==================\n'
+		out+= str(b)
+		out+="===============END OF BURST====================\n"
+
+	return out
+	# separate the packets into flows
+	
 
 
 ''' handle_sniffed:
