@@ -28,14 +28,17 @@ def main():
     clf = load_model(model_path)
 
     flowstring = capture_packets.read_from_file(pcap_path)
+
+    # use a temp file because we already have a method that will work with a file rather than a large string
     tempfile = tp.TemporaryFile(mode='w+')
     tempfile.write(flowstring)
     tempfile.seek(0) # go back to start of file
 
     fstring = classifier.find_next_flow(tempfile)
     features = []
-    print("looping")
+    out_strings = []
     while not (fstring==-1):
+        out_strings.append(fstring)
         feature = classifier.extract_features(classifier.parse_flow(fstring))
         features.append(feature)
         fstring = classifier.find_next_flow(tempfile)
@@ -43,7 +46,16 @@ def main():
     preds = clf.predict(features)
 
     # predictions = clf.predict(test_set)
-    print(classifier.map_predictions_to_strings(preds))
+    pred_strings = classifier.map_predictions_to_strings(preds)
+
+    for index in range(len(pred_strings)):
+        sl = len(out_strings[index])-1
+        out_strings[index] = out_strings[index][:sl] + (" <"+pred_strings[index]+">\n")
+
+    for string in out_strings:
+        print(string)
+
+
     # close
     tempfile.close() # close/get rid of temp file
 
