@@ -23,6 +23,9 @@ def main():
 
     if argc > 1:
         pcap_path = argv[1]
+    else:
+        print("Need to specify pcap trace!")
+        sys.exit(1)
 
     model_path = "classifier.randomforest" # set the default path to the random forest model
     clf = load_model(model_path)
