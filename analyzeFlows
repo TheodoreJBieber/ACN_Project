@@ -1,0 +1,3 @@
+#!/bin/sh
+
+sudo python3 capture_packets.py | python3 analyze_flows.py
