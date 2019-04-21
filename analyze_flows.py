@@ -1,5 +1,7 @@
 import sys
 
+from sklearn import ensemble, tree
+
 import capture_packets
 import classifier # helper functions to create feature vectors from flow strings
 from classifyFlows import load_model
@@ -16,14 +18,14 @@ def main():
     # Python treats sys.std* like a File
     flow_input = sys.stdin
 
-    clf = load_model('./classifer.randomforest')
+    clf = load_model('classifier.randomforest.linux')
 
     # Track number of bursts to match desired output
     burst_counter = 0
 
     # Just in case there are empty spaces or junk data,
     # seek to the line that is the start of a burst
-    find_start_of_burst()
+    find_start_of_burst(flow_input)
     current_flows = []
     flow_features = []
     while True:
@@ -33,7 +35,7 @@ def main():
         raw_flow = flow_input.readline()
         if "END OF BURST" not in raw_flow:
             current_flows.append(raw_flow)
-            flow_features.append(classifier.extract_features(classifer.parse_flow(raw_flow)))
+            flow_features.append(classifier.extract_features(classifier.parse_flow(raw_flow)))
         else:
             # attempt to label the flows
             preds = clf.predict(flow_features)
@@ -41,15 +43,15 @@ def main():
 
             # handle outputing the flow information
             burst_counter += 1
-            print("Burst {}:".format(burst_counter))
+            print("\nBurst {}:".format(burst_counter))
             # `zip()` returns an iterable in O(1)
-            for flow, label in zip(current_flows, lables):
-                print(flow + " <" +label+">")
+            for flow, label in zip(current_flows, labels):
+                print(flow.strip("\n") + " <" +label+">")
 
             # Reset the tracking variables
             current_flows = []
             flow_features = []
-            find_start_of_burst()
+            find_start_of_burst(flow_input)
 
 
 def find_start_of_burst(f):
