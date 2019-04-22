@@ -45,7 +45,12 @@ def main():
             burst_counter += 1
             print("\nBurst {}:".format(burst_counter))
             # `zip()` returns an iterable in O(1)
-            for flow, label in zip(current_flows, labels):
+            for flow, label, probs in zip(current_flows, labels, clf.predict_proba(flow_features)):
+                for tag in probs:
+                    if tag >= .65:
+                        break
+                else:
+                    label = "Unknown (Low Confidence)"
                 print(flow.strip("\n") + " <" +label+">")
 
             # Reset the tracking variables
